@@ -87,33 +87,34 @@ function ApplicationForm() {
   }
 
   return (
-    
-    <form onSubmit={handleSubmit} className="form-container" style={{ width: "500px", margin: "20vh auto", height: "100vh" }}>
+    // Form
+    <form onSubmit={handleSubmit} className="m-3 h-screen flex flex-col">
       <div className="form-row">
         <label htmlFor="companyName" className="visually-hidden"></label>
-          <input type="text" id="companyName" placeholder="Company Name" value={companyName} onChange={(e) => setCompanyName(e.target.value)}  style={{height: "50px", backgroundColor: "#C1A1D3"}} />
+          <input className='p-3' type="text" id="companyName" placeholder="Company Name" value={companyName} onChange={(e) => setCompanyName(e.target.value)}  style={{height: "50px", backgroundColor: "#C1A1D3"}} />
       </div>
-
-      <div className="form-row">
+        {/* Select Position */}
+      <div className="rounded-lg">
         <label htmlFor="position" className="visually-hidden"></label>
-        <select id="position" value={position} onChange={(e) => setPosition(e.target.value)} style={{height: "50px", backgroundColor: "#C1A1D3"}}>
-          <option value="" >Select Position:</option>
+        <select className='rounded-lg p-3' id="position" value={position} onChange={(e) => setPosition(e.target.value)} style={{height: "50px", backgroundColor: "#C1A1D3"}}>
+          <option className='' value="" >Position applied for:</option>
           {Object.values(jobPosition).map((option) =>(
             <option key={option} value={option}>{option}</option>
           ))}
         </select>
       </div>
 
-      <div className="date-row">
+
+      <div className="date-row gap-3 m-2">
         <label htmlFor="date" style={{color: 'black'}}>Date Applied:</label>
         <div>
-          <select id="day" value={day} onChange={(e) => setDay(e.target.value)} style={{backgroundColor: "#C1A1D3", marginRight: "5px"}}>
+          <select className='rounded-lg p-1' id="day" value={day} onChange={(e) => setDay(e.target.value)} style={{backgroundColor: "#C1A1D3", marginRight: "5px"}}>
             {days}
           </select>
-          <select id="month" value={month < 10 ? "0" + month : month} onChange={(e) => setMonth(e.target.value)} style={{backgroundColor: "#C1A1D3", marginRight: "5px"}}>
+          <select className='rounded-lg p-1' id="month" value={month < 10 ? "0" + month : month} onChange={(e) => setMonth(e.target.value)} style={{backgroundColor: "#C1A1D3", marginRight: "5px"}}>
             {months}
           </select>
-          <select id="year" value={year} onChange={(e) => setYear(e.target.value)} style={{backgroundColor: "#C1A1D3", marginRight: "5px"}}>
+          <select className='rounded-lg p-1' id="year" value={year} onChange={(e) => setYear(e.target.value)} style={{backgroundColor: "#C1A1D3", marginRight: "5px"}}>
             {years}
           </select>
         </div>
@@ -121,8 +122,8 @@ function ApplicationForm() {
 
 
       <div className="form-row">
-        <select id="applicationStatus" value={position} onChange={(e) => setPosition(e.target.value)} style={{height: "50px", backgroundColor: "#C1A1D3"}}>
-          <option value="">Choose Application Status</option>
+        <select className='rounded-lg p-3' id="applicationStatus" value={position} onChange={(e) => setPosition(e.target.value)} style={{height: "50px", backgroundColor: "#C1A1D3"}}>
+          <option className='rounded-lg' value="">Choose Application Status</option>
           {statusOptions.map((option) =>(
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
@@ -136,9 +137,9 @@ function ApplicationForm() {
       </div>
 
 
-      <div className="button-row">
-        <button type="button">Cancel</button>
-        <button type="submit">Submit</button>
+      <div className=" flex justify-end gap-4">
+        <button className='bg-lavendar p-2 rounded-lg' type="button">Cancel</button>
+        <button className='bg-lavendar p-2 rounded-lg' type="submit">Submit</button>
       </div>
     </form>
   );

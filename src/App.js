@@ -29,9 +29,13 @@ function App() {
     case '/leaderboard':
       text = "Leaderboard"
       break;
+    case '/applicationForm':
+      text = "Add an Application"
+      break;
     default:
       text = "Burn Out"
       break;
+    
   }
 
   
@@ -43,6 +47,7 @@ function App() {
               
               {/* <Route path='/login' element={<LoginView handleLogin={handleLogin}/>}></Route> */}
               {/* <Route path='/signup' element={<SignUpView />}></Route> */}
+                <Route path="/applicationForm" element={<ApplicationForm/>}></Route>
 
                 <Route path='/' element={<ApplicationsView/>}></Route>
 
