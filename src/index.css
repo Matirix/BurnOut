@@ -1,3 +1,97 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/*ApplicationsView*/
+
+  .profile-picture {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    object-fit: cover;
+  }
+
+
+
+/* @media screen and (max-width: 1200px) { */
+    input::placeholder {
+        color: black;
+    }
+    
+    
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+      
+    .form-row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .visually-hidden {
+        position: absolute;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        width: 1px;
+        margin: -1px;
+        padding: 0;
+        border: 0;
+    }
+    
+    /* .date-row {
+        display: flex;
+        margin-top: 1rem;
+    }
+    
+    .date-row:last-child {
+        margin-left: 100px;
+    } */
+    
+    .button-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    .button-row button {
+        background-color: #1A508B;
+        color: white;
+        font-size: 15px;
+        padding: 10px 40px;
+        border-radius: 15px;
+        margin: 10px 0px;
+        cursor: pointer;
+        
+      }
+      
+    .button-row button:first-child {
+        margin-right: auto;
+        
+    }
+    
+    .button-row button:last-child {
+        margin-left: auto;
+
+    }
+
+    .applicationsButton {
+        background-color: #1A508B;
+        color: white;
+        font-size: 15px;
+        padding: 10px 40px;
+        border-radius: 15px;
+        margin: 10px 0px;
+        cursor: pointer;
+
+    }
+
+
+
+
+
+  

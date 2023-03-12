@@ -1,17 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Saira+Stencil+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Salsa&display=swap');
 
-body {
-    background-color: #0D335D;
-    display: flex;
-    min-height: 100vh;
-    align-items: center;
-    justify-content: center;
-}
-
 .auth-form-container, .login-form, .signup-form{
     display: flex;
     flex-direction: column;
+    background-color: #0D335D;
 }
 
 .auth-form-container {
@@ -52,19 +45,15 @@ input{
     border-radius: 10px;
 }
 
-.link-btn{
+/* .link-btn{
     background: none;
     color: white;
     text-decoration:underline;
-}
+} */
 
 .title{
     font-size: 100px;
     color: white;
     font-family: 'Saira Stencil One', cursive;
     margin-bottom: 30px;
-}
-
-.google-header{
-    color: red;
 }

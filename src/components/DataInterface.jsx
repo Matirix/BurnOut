@@ -30,6 +30,7 @@ import {
     sendPasswordResetEmail,
 
 } from "firebase/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -47,18 +48,46 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app)
+const storage = getStorage(app);
 const analytics = getAnalytics(app);
 
 
 // Authentication functions
-export const authenticateWithGoogle = () => {
+export const authenticateWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    return signInWithPopup(provider);
+    try {
+        const result = await signInWithPopup(auth, provider);
+        addUser(result.user);
+        return result.user;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export const authenticateWithEmail = (email, password) => {
     return signInWithEmailAndPassword(email, password);
+}
+
+export const isLoggedIn = () => {
+    const user = getAuth().currentUser;
+    if (user) {
+        console.log("User is logged in");
+        return true;
+    } else {
+        console.log("User is not logged in");
+        return false;
+    }
+}
+
+export const getUserID = () => {
+    const user = getAuth().currentUser;
+    if (user) {
+        return user.uid;
+    } else {
+        return null;
+    }
 }
 
 export const logout = () => {
@@ -113,6 +142,8 @@ export const createApplication = (applicationData) => {
         jobPosition: applicationData.jobPosition,
         comments: applicationData.comments,
         communityID: applicationData.communityID,
+        userID: applicationData.userID,
+        // username: applicationData.username,
     }).then((newApplicationRef) => {
         console.log("Document written with ID: ", newApplicationRef.id);
     }).catch((error) => {
@@ -129,6 +160,7 @@ export const updateApplication = (applicationData) => {
         jobPosition: applicationData.jobPosition,
         comments: applicationData.comments,
         communityID: applicationData.communityID,
+        userID: applicationData.userID,
     }).then(() => {
         console.log("Document successfully updated!");
     }
@@ -138,21 +170,20 @@ export const updateApplication = (applicationData) => {
     });
 }
 
-export const getApplications = () => {
+export const getApplications = async (userID) => {
+    const applicationsRet = [];
     const applicationsColRef = collection(db, "applications");
-    const applicationsQuery = query(applicationsColRef, orderBy("dateApplied", "desc"));
-    return onSnapshot(applicationsQuery, (querySnapshot) => {
-        const applications = [];
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            applications.push({
-                id: doc.id,
-                ...doc.data()
-            });
-        });
-        return applications;
+    const q = query(applicationsColRef, where("userID", "==", userID));
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      applicationsRet.push(doc.data());
+      console.log(doc.id, " => ", doc.data());
     });
-}
+
+    return applicationsRet;
+  };
 
 export const getCommunityApplications = (communityID) => {
     const applicationsColRef = collection(db, "applications");
@@ -171,6 +202,8 @@ export const getCommunityApplications = (communityID) => {
 }
 
 export const streamCommunityApplications = (communityID, callback) => {
+    // const userRef = doc(db, "users", getUserID());
+    // const userDoc = collection(userRef, "applications");
     const applicationsColRef = collection(db, "applications");
     const communityApplicationsQuery = query(applicationsColRef, where("communityID", "==", communityID), orderBy("dateApplied", "desc"));
     return onSnapshot(communityApplicationsQuery, (querySnapshot) => {
@@ -199,11 +232,11 @@ export const deleteApplication = (applicationId) => {
 export const addUser = (user) => {
     // call this function after new user is created in firebase auth
     // pass in the user object(json/dict with email, username) and the userId
-    const userRef = doc(db, "users", user.id);
+    const userRef = doc(db, "users", user.uid);
     return setDoc(userRef, {
         email: user.email,
-        userName: user.userName,
-        communityID: user.communityID,
+        userName: user.displayName,
+        communityID: user.communityID || "0Km4CwF0nULxl1qtpyuB",
     }).then(() => {
         console.log("Document successfully written!");
     }
@@ -214,12 +247,11 @@ export const addUser = (user) => {
 }
 
 export const updateUser = (user) => {
-    const userRef = doc(db, "users", user.id);
+    const userRef = doc(db, "users", user.uid);
     return updateDoc(userRef, {
         email: user.email,
-        userName: user.userName,
-        communityID: user.communityID,
-        image: user.image
+        userName: user.displayName,
+        communityID: user.communityID || "0Km4CwF0nULxl1qtpyuB",
     }).then(() => {
         console.log("Document successfully updated!");
     }
@@ -229,23 +261,38 @@ export const updateUser = (user) => {
     });
 }
 
-export const getUser = (userId) => {
-    return {
-        userName: "test",
-        email: "test@test.com",
-        communityID: "test community",
+export const getUser = () => {
+    const userId = getUserID();
+    const userRef = doc(db, "users", userId);
+    return getDoc(userRef).then((doc) => {
+        if (doc.exists()) {
+            return doc.data();
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
     }
-    // const userRef = doc(db, "users", userId);
-    // return getDoc(userRef).then((doc) => {
-    //     if (doc.exists()) {
-    //         return doc.data();
-    //     } else {
-    //         // doc.data() will be undefined in this case
-    //         console.log("No such document!");
-    //     }
-    // }).catch((error) => {
-    //     console.log("Error getting document:", error);
-    // });
+    );
+};
+
+export const uploadUserImage = (image) => {
+    var userId = getUserID();
+    const storageRef = ref(storage, `users/${userId}/profileImage`);
+    return uploadBytes(storageRef, image).then((snapshot) => {
+        console.log('Uploaded a blob or file!');
+    });
+}
+
+export const getUserImage = () => {
+    var userId = getUserID();
+    const storageRef = ref(storage, `users/${userId}/profileImage`);
+    return getDownloadURL(storageRef).then((url) => {
+        return url;
+    }).catch((error) => {
+        console.log(error);
+    });
 }
 
 // community functions
@@ -292,3 +339,4 @@ export const getCommunity = (communityId) => {
         console.log("Error getting document:", error);
     });
 }
+
