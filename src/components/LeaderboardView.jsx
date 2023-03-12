@@ -99,18 +99,18 @@ function LeaderboardView() {
 
       {/* People Ranking List */}
 
-      <div className="flex flex-col gap-2 overflow-y-scroll">
+      <div className="flex flex-col gap-1 overflow-scroll">
         {/* Each card */}
         {sortedLeaderBoards.map(({ id, link, pic, name, rejections, applications, datetime, comment }, index) => {
           return (
-            <div className=" p-2 flex justify-between border-solid border-black border-1 mx-2" key={id}>
+            <div className="p-2 m-1 flex justify-between border-solid bg-navy rounded-md mx-2" key={id}>
 
 
               <div className='flex gap-2 w-1/5'>
                 <p className='text-navy m-auto font-saira'>{index + 1}</p>
                 <div className='flex flex-col'>
                 <img src={pic} alt="" className='grow' />
-                <p className="font-saira text-center">{name}</p>
+                <p className="font-saira text-center text-white">{name}</p>
 
 
                 </div>
